@@ -1,6 +1,6 @@
 services:
   item-app:                    
-    image: item-app:v1          # menggunakan image item-app:v1
+    image: docker pull ghcr.io/tri-susilo/item-app:v1       # menggunakan image item-app:v1
     container_name: item-app    # memberi nama container dengan nama "item-app"
     restart: always             # apabila container error/stop akan otomatis restart
     depends_on:
