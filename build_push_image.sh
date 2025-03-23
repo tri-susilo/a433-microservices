@@ -6,7 +6,6 @@ set -e                                                                          
 IMAGE_NAME="item-app"                                                                   # variabel nama image
 IMAGE_TAG="v1"                                                                          # variabel untuk version tag
 GITHUB_USER="tri-susilo"                                                                # variabel user github
-GITHUB_REPO="microservice-01"                                                           # 
 GITHUB_PACKAGE="ghcr.io/$GITHUB_USER/$IMAGE_NAME:$IMAGE_TAG"                            # variabel
 
 echo "Build docker image:.."                                                            
