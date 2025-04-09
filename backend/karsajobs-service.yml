@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service                 # Define kubernetes objek
+metadata:
+  name: karsajobs-service     # Nama service
+  namespace: karsajobs-ns     # define deployment di namespace karsajobs-ns
+  labels:
+    app: karsajobs            # Label yang sama dengan yang digunakan oleh Pod
+spec:
+  type: NodePort              # Jenis service: membuka akses ke luar cluster melalui Node IP dan port tertentu
+  ports:
+  - port: 8080                # Port yang diekspos oleh service di dalam cluster
+    targetPort: 8080          # Port dalam Pod yang akan menerima trafik
+    nodePort: 30008           # Port pada Node (host) yang digunakan untuk mengakses service dari luar cluster
+  selector:
+    app: karsajobs            # Service akan meneruskan trafik ke Pod yang memiliki label app: karsajobs
+

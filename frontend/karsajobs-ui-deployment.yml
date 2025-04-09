@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment                               # Jenis resource: Deployment digunakan untuk mengatur replikasi dan update Pod secara deklaratif
+metadata:
+  name: karsajobs-ui                           # Nama Deployment
+  namespace: karsajobs-ns                      # Namespace tempat Deployment dibuat
+  labels:
+    app: karsajobs-ui                          # Label untuk mengelompokkan resource berdasarkan aplikasi
+spec:
+  replicas: 1                                  # Menentukan jumlah Pod yang ingin dijalankan
+  selector:
+    matchLabels:
+      app: karsajobs-ui                        # Deployment akan mencari Pod dengan label ini untuk dikelola
+  template:
+    metadata:
+      labels:
+        app: karsajobs-ui                      # Label pada Pod, harus cocok dengan selector di atas
+    spec:
+      containers:
+      - name: karsajobs-ui                     # Nama kontainer dalam Pod
+        image: ghcr.io/tri-susilo/karsajobs-ui:latest     # Image yang digunakan
+        ports:
+        - containerPort: 8000                  # Port internal kontainer yang digunakan aplikasi frontend
+        env:
+        - name: VUE_APP_BACKEND
+          value: "http://172.19.60.8:30008"    # Alamat backend yang diakses oleh aplikasi UI

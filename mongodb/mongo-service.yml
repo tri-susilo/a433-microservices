@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-service               # Nama service yang akan digunakan untuk mengakses MongoDB
+  namespace: karsajobs-ns           # Service ini berada di namespace karsajobs-ns
+spec:
+  selector:
+    app: mongo                      # Selector untuk menghubungkan service ke Pod dengan label app: mongo
+  ports:
+  - port: 27017                     # Port yang diekspos oleh service di dalam cluster
+    targetPort: 27017              # Port pada Pod/container MongoDB
+  clusterIP: None                  # Headless service, digunakan untuk StatefulSet agar masing-masing Pod dapat diakses langsung

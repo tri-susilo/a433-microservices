@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongo                      # Nama StatefulSet
+  namespace: karsajobs-ns          # StatefulSet ini berada di namespace karsajobs-ns
+spec:
+  serviceName: "mongo-service"     # Nama Headless Service yang digunakan untuk DNS Pod (harus match dengan Service sebelumnya)
+  replicas: 1                      # Jumlah Pod MongoDB yang akan dijalankan
+  selector:
+    matchLabels:
+      app: mongo                   # Selector untuk mencocokkan Pod yang akan dikelola oleh StatefulSet
+  template:
+    metadata:
+      labels:
+        app: mongo                 # Label yang akan dimiliki oleh Pod
+    spec:
+      containers:
+      - name: mongo                # Nama container
+        image: mongo:4.4           # Image MongoDB yang digunakan
+        ports:
+        - containerPort: 27017     # Port MongoDB yang dibuka di dalam container
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME_FILE
+          value: /etc/mongo-credentials/MONGO_ROOT_USERNAME   # File path ke username (dibaca dari Secret)
+        - name: MONGO_INITDB_ROOT_PASSWORD_FILE
+          value: /etc/mongo-credentials/MONGO_ROOT_PASSWORD   # File path ke password (dibaca dari Secret)
+        volumeMounts:
+        - name: mongo-data
+          mountPath: /data/db       # Mount path untuk penyimpanan data MongoDB
+        - name: mongo-config
+          mountPath: /config        # Mount path untuk konfigurasi tambahan (dari ConfigMap)
+        - name: mongo-secret
+          mountPath: /etc/mongo-credentials   # Mount path ke Secret yang berisi kredensial
+          readOnly: true            # Secret hanya dibaca, tidak boleh diubah
+      volumes:
+      - name: mongo-config
+        configMap:
+          name: mongo-configmap     # Referensi ke ConfigMap bernama mongo-configmap
+      - name: mongo-secret
+        secret:
+          secretName: mongo-secret  # Referensi ke Secret bernama mongo-secret
+
+  volumeClaimTemplates:
+  - metadata:
+      name: mongo-data              # PVC yang akan dibuat secara otomatis untuk setiap Pod 
+    spec:
+      accessModes: [ "ReadWriteOnce" ]  # Mode akses yang sesuai dengan PV/PVC
+      resources:
+        requests:
+          storage: 1Gi              # Storage yang diminta oleh masing-masing Pod MongoDB

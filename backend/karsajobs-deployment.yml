@@ -1,0 +1,37 @@
+apiVersion: apps/v1                                          # Versi API yang digunakan untuk resource Deployment
+kind: Deployment                                             # Jenis resource Kubernetes: Deployment
+metadata:
+  name: karsajobs                                            # Nama Deployment
+  namespace: karsajobs-ns                                    # Namespace tempat resource ini dibuat 
+  labels:
+    app: karsajobs                                           # Label umum untuk identifikasi dan seleksi resource
+spec:
+  replicas: 1                                                # Jumlah pod yang ingin dijalankan
+  selector:
+    matchLabels:
+      app: karsajobs                                         # Selector untuk mencocokkan pod yang dikelola oleh Deployment
+  template:
+    metadata:
+      labels:
+        app: karsajobs                                       
+    spec:
+      containers:
+      - name: karsajobs                                      # Nama kontainer dalam pod
+        image: ghcr.io/tri-susilo/karsajobs:latest           # Image yang digunakan
+        ports:
+        - containerPort: 8080                                # Port internal aplikasi, bisa dihubungkan lewat service
+        env:
+        - name: APP_PORT
+          value: "8080"                                      # Port aplikasi dalam environment variable
+        - name: MONGO_HOST
+          value: "mongo-service"                             # Host MongoDB,
+        - name: MONGO_USER
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret                             # Mengambil nilai mongo username dari Secret,
+              key: MONGO_ROOT_USERNAME                       
+        - name: MONGO_PASS
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret                             # Ambil password MongoDB dari Secret juga
+              key: MONGO_ROOT_PASSWORD

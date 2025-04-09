@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap                                         # Resource untuk menyimpan data konfigurasi non-rahasia dalam format key-value
+metadata:
+  name: mongo-configmap                                 # Nama ConfigMap yang akan direferensikan oleh Pod
+  namespace: karsajobs-ns                               # Namespace tempat ConfigMap disimpan (harus sama dengan resource yang menggunakannya)
+data:
+  mongo.conf: |                                         # Key: mongo.conf - berisi isi file konfigurasi MongoDB (dalam format YAML)
+    storage:
+      dbPath: /data/db                                  # Path direktori penyimpanan data database MongoDB di dalam kontainer

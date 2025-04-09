@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: PersistentVolume          # Define resource PersistentVolume di level cluster
+metadata:
+  name: mongo-pv                # Nama PV (PersistentVolume)
+spec:
+  capacity:
+    storage: 1Gi                # Kapasitas storage yang disediakan oleh volume ini
+  accessModes:
+    - ReadWriteOnce            # Volume hanya bisa di-mount oleh satu Pod pada satu waktu (baca/tulis)
+  persistentVolumeReclaimPolicy: Retain   # Kebijakan saat PVC dihapus: data akan tetap disimpan (tidak otomatis dihapus)
+  hostPath:
+    path: /data/mongo-data     # Path pada file system node tempat data akan disimpan (hanya cocok untuk local/test environment)
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim     # Define resource PersistentVolumeClaim untuk meminta storage dari PV
+metadata:
+  name: mongo-pvc               # Nama PVC yang akan digunakan oleh Pod
+  namespace: karsajobs-ns       # PVC ini dibuat di namespace karsajobs-ns
+spec:
+  accessModes:
+    - ReadWriteOnce            # Harus sesuai dengan accessMode pada PV
+  resources:
+    requests:
+      storage: 1Gi             # Meminta kapasitas storage sebesar 1Gi (harus sesuai atau lebih kecil dari PV)
+
