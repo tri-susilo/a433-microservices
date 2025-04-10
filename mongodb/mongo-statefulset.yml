@@ -39,12 +39,7 @@ spec:
       - name: mongo-secret
         secret:
           secretName: mongo-secret  # Referensi ke Secret bernama mongo-secret
+      - name: mongo-data            
+        persistentVolumeClaim:    
+          claimName: mongo-pvc
 
-  volumeClaimTemplates:
-  - metadata:
-      name: mongo-data              # PVC yang akan dibuat secara otomatis untuk setiap Pod 
-    spec:
-      accessModes: [ "ReadWriteOnce" ]  # Mode akses yang sesuai dengan PV/PVC
-      resources:
-        requests:
-          storage: 1Gi              # Storage yang diminta oleh masing-masing Pod MongoDB
