@@ -3,7 +3,7 @@ name: Build & Push Docker Image
 on:
   push:
     branches:
-      - main
+      - order-service
     tags:
       - 'v*'  # optional: run on versioned tags
 
