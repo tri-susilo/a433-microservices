@@ -13,7 +13,7 @@ RUN addgroup -S node-shipping && adduser -S node-shipping -G node-shipping
 WORKDIR /src
 COPY --from=builder /src ./
 RUN chown -R node-shipping:node-shipping /src
-USER appuser
+USER node-shipping
 EXPOSE 3001
 ENV NODE_ENV=production
 CMD ["node", "index.js"]
