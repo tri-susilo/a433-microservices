@@ -13,7 +13,7 @@ RUN addgroup -S node-order && adduser -S node-order -G node-order
 WORKDIR /src
 COPY --from=builder /src ./
 RUN chown -R node-order:node-order /src
-USER appuser
+USER node-order
 EXPOSE 3000
 ENV NODE_ENV=production
 CMD ["node", "index.js"]
