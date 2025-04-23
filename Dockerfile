@@ -1,23 +1,18 @@
 # Stage 1: Install dependencies
-FROM node:22-alpine AS dependencies
+#Menginstall image node versi 18 dengan linux alpine sebagai base image
+FROM node:18-alpine
+#Menetapkan direktori aktif
 WORKDIR /src
+#Menyalin/copy file package-lock.json dan package.json ke direktori aktif saat ini (/src)
 COPY package*.json ./
-RUN npm ci --omit=dev
-
-# Stage 2: Build stage (copying app files)
-FROM node:22-alpine AS builder
-WORKDIR /src
-COPY package*.json ./
-COPY . .            
-COPY --from=dependencies /src/node_modules ./node_modules
-
-# Stage 3: Production image
-FROM node:22-alpine AS production
-RUN addgroup -S node-order && adduser -S node-order -G node-order
-WORKDIR /src
-COPY --from=builder /src ./
-RUN chown -R node-order:node-order /src
-USER node-order
-EXPOSE 3000
+#Mengatur environment ke produksi
 ENV NODE_ENV=production
+#Menginstall dependensi yang tertera di file package.json berdasarkan versi pada package-lock.json
+##cocok digunakan pada lingkungan produksi
+RUN npm ci
+#Menyalin semua file dengan ekstensi .js ke direktori aktif saat ini
+COPY ./*.js ./
+#Menjalankan file index.js saat container pertama kali dijalankan
 CMD ["node", "index.js"]
+#Membuka port 3000 pada container
+EXPOSE 3000
