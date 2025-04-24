@@ -18,7 +18,7 @@ COPY . .
 
 # Membuka port 3000 pada container untuk akses aplikasi
 
-EXPOSE 3000
+EXPOSE 3001
 
 # Menentukan perintah yang dijalankan saat container berjalan
 
