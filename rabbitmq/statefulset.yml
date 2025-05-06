@@ -1,0 +1,41 @@
+apiVersion: apps/v1                          # Versi API untuk StatefulSet
+kind: StatefulSet                            # Jenis resource StatefulSet, cocok untuk aplikasi stateful seperti RabbitMQ
+metadata:
+  name: rabbitmq                             # Nama StatefulSet
+  namespace: e-commerce                      # Namespace tempat StatefulSet berada
+spec:
+  serviceName: "rabbitmq-headless"           # Nama Headless Service yang digunakan untuk DNS Pod (wajib untuk StatefulSet)
+  replicas: 1                                # Jumlah Pod RabbitMQ yang akan dijalankan
+  selector:
+    matchLabels:
+      app: rabbitmq                          # Selector yang mencocokkan Pod dengan label 'app: rabbitmq'
+  template:                                  # Template Pod yang akan dibuat oleh StatefulSet
+    metadata:
+      labels:
+        app: rabbitmq                        # Label yang diberikan ke Pod
+    spec:
+      containers:
+        - name: rabbitmq                     # Nama container
+          image: rabbitmq:3-management       # Image RabbitMQ dengan UI manajemen (port 15672)
+          ports:
+            - containerPort: 5672            # Port AMQP RabbitMQ
+              name: amqp
+            - containerPort: 15672           # Port UI manajemen RabbitMQ
+              name: management
+          volumeMounts:                      # Mount volume ke dalam container
+            - name: config-volume
+              mountPath: /etc/rabbitmq       # Mount konfigurasi ke direktori config RabbitMQ
+            - name: rabbitmq-data
+              mountPath: /var/lib/rabbitmq   # Mount data volume ke direktori data RabbitMQ
+      volumes:
+        - name: config-volume
+          configMap:
+            name: rabbitmq-config            # Ambil konfigurasi dari ConfigMap 'rabbitmq-config'
+  volumeClaimTemplates:
+    - metadata:
+        name: rabbitmq-data                  # Nama PVC yang akan otomatis dibuat untuk setiap Pod
+      spec:
+        accessModes: ["ReadWriteOnce"]       # PVC hanya dapat digunakan oleh satu node pada satu waktu
+        resources:
+          requests:
+            storage: 1Gi                     # Ukuran penyimpanan yang diminta untuk data RabbitMQ

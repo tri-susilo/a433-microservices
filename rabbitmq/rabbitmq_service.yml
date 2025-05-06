@@ -1,0 +1,18 @@
+apiVersion: v1                           # Versi API Kubernetes untuk Service
+kind: Service                            # Jenis resource: Service
+metadata:
+  name: rabbitmq                         # Nama Service
+  namespace: e-commerce                  # Namespace tempat Service berada
+spec:
+  selector:
+    app: rabbitmq                        # Service akan meneruskan trafik ke Pod yang memiliki label 'app: rabbitmq'
+  type: NodePort                         # Tipe Service NodePort: membuka akses dari luar cluster ke Node IP:port
+  ports:
+    - name: amqp                         # Nama port pertama untuk protokol AMQP
+      protocol: TCP                      # Protokol TCP
+      port: 5672                         # Port dalam cluster yang bisa digunakan oleh Pod lain untuk akses RabbitMQ
+      targetPort: 5672                   # Port dalam container RabbitMQ yang menerima koneksi AMQP
+    - name: management                   # Nama port kedua untuk UI manajemen
+      protocol: TCP                      # Protokol TCP
+      port: 15672                        # Port dalam cluster untuk akses UI manajemen
+      targetPort: 15672                  # Port dalam container RabbitMQ untuk UI manajemen

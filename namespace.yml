@@ -1,0 +1,4 @@
+apiVersion: v1
+kind: Namespace     # define kubernetes object, yaitu namespace
+metadata:           #  
+  name: e-commerce  # nama namespace yang akan dibuat,

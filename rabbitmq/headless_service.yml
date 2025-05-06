@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service                     # define kubernetes object
+metadata:             
+  name: rabbitmq-headless         # nama Service
+  namespace: e-commerce           # namespace tempat Service ini berada
+spec:
+  clusterIP: None
+  selector:
+    app: rabbitmq                 # Memilih Pod dengan label 'app: rabbitmq'
+  ports:
+    - port: 5672                  # port untuk protokol AMQP
+      name: amqp                  # nama port
+    - port: 15672                 # port untuk UI manajemen RabbitMQ (dashboard web)
+      name: management            # nama port

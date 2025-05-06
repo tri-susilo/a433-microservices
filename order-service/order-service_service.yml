@@ -1,0 +1,14 @@
+apiVersion: v1              
+kind: Service                 # mendifinisikan kubernetes object "service"
+metadata:
+  name: order-service-svc     # nama service yang akan dibuat
+  namespace: e-commerce       # namespace tempat service ini berada
+spec:                         # mendefinisikan spesifikasi apa saja yang akan digunakan
+  selector:                   # label selector untuk mencocokkan pod yang akan dilayani oleh service
+    app: order-service        # pod yang memiliki label 'app: order-service' akan dipilih
+  ports:
+    - name: http
+      protocol: TCP           # protokol yang digunakan (TCP)
+      port: 3000              # port yang diekspos oleh service di dalam cluste
+      targetPort: 3000        # port pada Pod yang menjadi tujuan trafik
+

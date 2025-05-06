@@ -1,0 +1,36 @@
+apiVersion: networking.istio.io/v1beta1                           # versi API untuk resource networking Istio
+kind: Gateway                                                     # define kubernetes object
+metadata:                                                         
+  name: e-commerce-gateway                                        # nama dari service gateway
+  namespace: e-commerce                                           # namespace tempat gateway ini dibuat
+spec:
+  selector:
+    istio: ingressgateway                                         # selector default untuk memilih ingress gateway yang dideploy oleh Istio
+  servers:
+    - port:
+        number: 3000                                              # port yang diekspos oleh ingress gateway
+        name: http
+        protocol: HTTP                                            # jenis protocol yang digunakan
+      hosts:
+        - "*"                                                     # menerima trafik dari semua host (wildcard)
+---
+apiVersion: networking.istio.io/v1beta1                           # versi API untuk resource networking Istio
+kind: VirtualService                                              # define kubernetes object
+metadata:
+  name: e-commerce-vs                                             # nama VirtualService
+  namespace: e-commerce                                           # namespace tempat service ini dibuat
+spec:
+  hosts:
+    - "*"                                                         # berlaku untuk semua domain/host
+  gateways:
+    - e-commerce-gateway
+  http:
+    - match:
+        - uri:
+            exact: /order                                         # Match URL "/order" secara exact (tidak prefix)
+      route:
+        - destination:
+            host: order-service-svc.e-commerce.svc.cluster.local  # Host tujuan di dalam cluster
+            port:
+              number: 3000                                        # Port yang digunakan untuk mengakses service tujuan
+---

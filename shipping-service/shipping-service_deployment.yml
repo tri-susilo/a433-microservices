@@ -1,0 +1,26 @@
+# Deployment untuk shipping-service
+apiVersion: apps/v1
+kind: Deployment                                                          # define kubernetes objects deployment
+metadata: 
+  name: shipping-service                                                  # nama dari deployment
+  namespace: e-commerce                                                   # service ini akan berjalan di namespace e-commerce
+spec:                                                                     # spesifikasi dari service ini
+  replicas: 1                                                             # pod yang akan dideploy hanya akan berjumlah 1
+  selector:                                                               # selector untuk mencocokkan pod yang dikontrol deployment ini
+    matchLabels:
+      app: shipping-service                                               # pod yang memiliki label 'app: shipping-service' akan dipilih
+  template:                                                               # template yang digunakan untuk membuat pod baru
+    metadata:
+      labels:
+        app: shipping-service                                             # label yang diberikan ke Pod yang dibuat dari template ini
+    spec:
+      containers:                                                         # daftar kontainer dalam Pod
+        - name: shipping-service                                          # nama kontainer
+          image: ghcr.io/tri-susilo/shipping-service:dev-caf4bc4          # image container yang akan dijalankan
+          ports:                                              
+            - containerPort: 3001                                         # port dalam kontainer yang akan dibuka
+          env:                                                            # environment variables untuk kontainer
+            - name: PORT
+              value: "3001"                                               # menentukan port yang digunakan oleh aplikasi di dalam kontainer
+            - name: AMQP_URL
+              value: "amqp://guest:guest@rabbitmq:5672"                   # URL koneksi ke RabbitMQ,
